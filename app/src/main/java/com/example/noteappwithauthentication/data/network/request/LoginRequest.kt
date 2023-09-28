@@ -1,4 +1,4 @@
-package com.example.noteappwithauthentication.data.request
+package com.example.noteappwithauthentication.data.network.request
 
 data class LoginRequest(
     val email:String,

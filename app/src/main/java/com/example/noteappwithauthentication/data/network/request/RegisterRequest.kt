@@ -1,4 +1,4 @@
-package com.example.noteappwithauthentication.data.request
+package com.example.noteappwithauthentication.data.network.request
 
 data class RegisterRequest(
     val name:String,
