@@ -1,4 +1,7 @@
 package com.example.noteappwithauthentication.preferences
 
-class AuthTokenManager {
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+
+class AuthTokenManager(private val dataStore: DataStore<Preferences>) {
 }
