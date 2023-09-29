@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName
 data class GetNotesByIdResponse(
 
 	@field:SerializedName("data")
-	val data: List<DataItem>
+	val data: List<NoteDataItem>
 )
 
-data class DataItem(
+data class NoteDataItem(
 
 	@field:SerializedName("createdAt")
 	val createdAt: String,
