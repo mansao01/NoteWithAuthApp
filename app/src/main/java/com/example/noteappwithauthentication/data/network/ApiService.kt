@@ -11,6 +11,7 @@ import com.example.noteappwithauthentication.data.network.response.GetProfileRes
 import com.example.noteappwithauthentication.data.network.response.LoginResponse
 import com.example.noteappwithauthentication.data.network.response.LogoutResponse
 import com.example.noteappwithauthentication.data.network.response.RegisterResponse
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -19,12 +20,12 @@ import retrofit2.http.Path
 interface ApiService {
     @POST("v1/register")
     suspend fun register(
-        registerRequest: RegisterRequest
+      @Body  registerRequest: RegisterRequest
     ): RegisterResponse
 
     @POST("v1/register")
     suspend fun login(
-        loginRequest: LoginRequest
+       @Body loginRequest: LoginRequest
     ): LoginResponse
 
     @GET("v1/profile")
@@ -35,7 +36,7 @@ interface ApiService {
 
     @POST("v1/logout")
     suspend fun logout(
-        logoutRequest: LogoutRequest
+       @Body logoutRequest: LogoutRequest
     ): LogoutResponse
 
     @GET("v1/notes/{id}")
@@ -50,7 +51,7 @@ interface ApiService {
     suspend fun createNote(
         @Header("Authorization")
         token: String,
-        createNoteRequest: CreateNoteRequest
+      @Body  createNoteRequest: CreateNoteRequest
     ): CreateNoteReponse
 
     @POST("v1/note/{id}")

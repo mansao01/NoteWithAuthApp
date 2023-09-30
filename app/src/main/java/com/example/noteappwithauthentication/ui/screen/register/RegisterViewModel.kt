@@ -20,7 +20,7 @@ class RegisterViewModel(
     private val noteRepository: NoteRepository
 ) : ViewModel() {
 
-    var uiState: RegisterUiState by mutableStateOf(RegisterUiState.Loading)
+    var uiState: RegisterUiState by mutableStateOf(RegisterUiState.StandBy)
         private set
 
     fun getUiState() {
