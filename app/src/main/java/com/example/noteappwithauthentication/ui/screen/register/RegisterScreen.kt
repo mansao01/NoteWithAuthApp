@@ -186,7 +186,7 @@ fun RegisterComponent(
                 .padding(horizontal = 52.dp)
                 .padding(top = 18.dp)
         ) {
-            Text(text = "Post")
+            Text(text = "Register")
         }
     }
 }

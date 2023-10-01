@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.noteappwithauthentication.ui.navigation.Screen
+import com.example.noteappwithauthentication.ui.screen.home.HomeScreen
 import com.example.noteappwithauthentication.ui.screen.login.LoginScreen
 import com.example.noteappwithauthentication.ui.screen.login.LoginViewModel
 import com.example.noteappwithauthentication.ui.screen.register.RegisterScreen
@@ -35,7 +36,16 @@ fun NoteApp(
 
         composable(Screen.Login.route) {
             val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
-            LoginScreen(uiState = loginViewModel.uiState)
+            LoginScreen(
+                uiState = loginViewModel.uiState,
+                navigateToHome = { userId ->
+                    navController.navigate(Screen.Home.createRoute(userId))
+                }
+            )
+        }
+
+        composable(Screen.Home.route){
+            HomeScreen()
         }
     }
 }
