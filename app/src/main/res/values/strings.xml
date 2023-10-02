@@ -9,4 +9,5 @@
     <string name="hide_password">Hide password</string>
     <string name="show_password">show password</string>
     <string name="register">Register</string>
+    <string name="login">Login</string>
 </resources>

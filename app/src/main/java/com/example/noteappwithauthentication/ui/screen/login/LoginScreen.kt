@@ -2,8 +2,12 @@ package com.example.noteappwithauthentication.ui.screen.login
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,17 +47,24 @@ import com.example.noteappwithauthentication.ui.component.LoadingScreen
 
 @Composable
 fun LoginScreen(
-    uiState:LoginUiState,
-    loginViewModel: LoginViewModel  = viewModel(factory = LoginViewModel.Factory),
-    navigateToHome:(Int) -> Unit
+    uiState: LoginUiState,
+    loginViewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory),
+    navigateToHome: (Int) -> Unit,
+    navigateToRegister: () -> Unit
+
 ) {
     val context = LocalContext.current
-    when(uiState){
-        is LoginUiState.StandBy -> LoginComponent(loginViewModel = loginViewModel)
+    when (uiState) {
+        is LoginUiState.StandBy -> LoginComponent(
+            loginViewModel = loginViewModel,
+            navigateToRegister = navigateToRegister
+        )
+
         is LoginUiState.Loading -> LoadingScreen()
-        is LoginUiState.Success ->{
+        is LoginUiState.Success -> {
             navigateToHome(uiState.loginResponse.id)
         }
+
         is LoginUiState.Error -> {
             mToast(context, uiState.msg)
             loginViewModel.getUiState()
@@ -64,7 +76,8 @@ fun LoginScreen(
 @Composable
 fun LoginComponent(
     loginViewModel: LoginViewModel,
-    modifier:Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToRegister: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var isEmailEmpty by remember { mutableStateOf(false) }
@@ -82,7 +95,7 @@ fun LoginComponent(
             .padding(horizontal = 16.dp)
     ) {
         Text(
-            text = stringResource(R.string.register),
+            text = stringResource(R.string.login),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 36.sp,
             modifier = Modifier
@@ -141,25 +154,40 @@ fun LoginComponent(
                 .padding(top = 16.dp)
         )
 
-        Button(
-            onClick = {
-                when {
-                    email.isEmpty() -> isEmailEmpty = true
-                    password.isEmpty() -> isPasswordEmpty = true
-                    else -> loginViewModel.login(
-                        LoginRequest(
-                            email,
-                            password,
-                        )
-                    )
-                }
-            },
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(horizontal = 52.dp)
-                .padding(top = 18.dp)
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Post")
+            Text(
+                text = "Register",
+                textDecoration = TextDecoration.Underline,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (isEmailEmpty || isPasswordEmpty) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(start = 52.dp)
+                    .clickable { navigateToRegister() }
+            )
+
+            Button(
+                onClick = {
+                    when {
+                        email.isEmpty() -> isEmailEmpty = true
+                        password.isEmpty() -> isPasswordEmpty = true
+                        else -> loginViewModel.login(
+                            LoginRequest(
+                                email,
+                                password,
+                            )
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .padding(top = 18.dp)
+                    .padding(end = 52.dp)
+            ) {
+                Text(text = "login")
+            }
         }
     }
 }

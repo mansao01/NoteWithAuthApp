@@ -25,7 +25,7 @@ class HomeViewModel(
         private set
 
 
-    fun getUsersAndProfile(noteId:Int) {
+    fun getNotesAndProfile(noteId:Int) {
         viewModelScope.launch {
             val localToken  = authTokenManager.getAccessToken()
             uiState = HomeUiState.Loading
