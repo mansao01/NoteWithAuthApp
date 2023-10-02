@@ -13,7 +13,6 @@ import com.example.noteappwithauthentication.data.NoteRepository
 import com.example.noteappwithauthentication.data.network.request.LoginRequest
 import com.example.noteappwithauthentication.preferences.AuthTokenManager
 import com.example.noteappwithauthentication.ui.common.LoginUiState
-import com.example.noteappwithauthentication.ui.screen.register.RegisterViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -38,6 +37,7 @@ class LoginViewModel(
                 val result = noteRepository.login(loginRequest)
                 result.accessToken.let { authTokenManager.saveAccessToken(it) }
                 result.refreshToken.let { authTokenManager.saveRefreshToken(it) }
+                authTokenManager.saveUserId(result.id)
                 authTokenManager.saveIsLoginState(true)
                 LoginUiState.Success(result)
 

@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,7 +50,7 @@ import com.example.noteappwithauthentication.ui.component.LoadingScreen
 fun LoginScreen(
     uiState: LoginUiState,
     loginViewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory),
-    navigateToHome: (Int) -> Unit,
+    navigateToHome: () -> Unit,
     navigateToRegister: () -> Unit
 
 ) {
@@ -62,7 +63,9 @@ fun LoginScreen(
 
         is LoginUiState.Loading -> LoadingScreen()
         is LoginUiState.Success -> {
-            navigateToHome(uiState.loginResponse.id)
+            LaunchedEffect(Unit){
+                navigateToHome()
+            }
         }
 
         is LoginUiState.Error -> {

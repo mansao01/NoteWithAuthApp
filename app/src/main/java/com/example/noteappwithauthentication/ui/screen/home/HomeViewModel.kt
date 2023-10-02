@@ -25,12 +25,13 @@ class HomeViewModel(
         private set
 
 
-    fun getNotesAndProfile(noteId:Int) {
+    fun getNotesAndProfile() {
         viewModelScope.launch {
             val localToken  = authTokenManager.getAccessToken()
+            val userId = authTokenManager.getUserId()
             uiState = HomeUiState.Loading
             uiState = try {
-                val result = noteRepository.getNotesById("Bearer $localToken", noteId)
+                val result = noteRepository.getNotesById("Bearer $localToken", userId!!)
                 val resultProfile = noteRepository.profile("Bearer $localToken")
                 HomeUiState.Success(result.data, resultProfile, localToken !!)
             } catch (e: Exception) {
