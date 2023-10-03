@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.noteappwithauthentication.ui.navigation.Screen
+import com.example.noteappwithauthentication.ui.screen.add.AddScreen
+import com.example.noteappwithauthentication.ui.screen.add.AddViewModel
 import com.example.noteappwithauthentication.ui.screen.home.HomeScreen
 import com.example.noteappwithauthentication.ui.screen.home.HomeViewModel
 import com.example.noteappwithauthentication.ui.screen.login.LoginScreen
@@ -19,7 +21,7 @@ import com.example.noteappwithauthentication.ui.screen.register.RegisterViewMode
 fun NoteApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination:String
+    startDestination: String
 ) {
 
     NavHost(
@@ -48,9 +50,23 @@ fun NoteApp(
             )
         }
 
-        composable(Screen.Home.route){
-            val homeViewModel:HomeViewModel = viewModel(factory = HomeViewModel.Factory)
-            HomeScreen( uiState = homeViewModel.uiState)
+        composable(Screen.Home.route) {
+            val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
+            HomeScreen(
+                uiState = homeViewModel.uiState,
+                navigateToAdd = {
+                    navController.navigate(Screen.Add.route)
+                })
+        }
+
+        composable(Screen.Add.route) {
+            val addViewModel: AddViewModel = viewModel(factory = AddViewModel.Factory)
+            AddScreen(
+                uiState = addViewModel.uiState,
+                addViewModel = addViewModel,
+                navigateToHome = {
+                    navController.navigate(Screen.Home.route)
+                })
         }
     }
 }

@@ -24,7 +24,8 @@ import com.example.noteappwithauthentication.ui.component.NoteListItem
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
-    uiState: HomeUiState
+    uiState: HomeUiState,
+    navigateToAdd:() -> Unit
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -77,4 +78,9 @@ fun NoteList(
             NoteListItem(note = data)
         }
     }
+}
+
+@Composable
+fun HomeTopBar() {
+    TODO()
 }

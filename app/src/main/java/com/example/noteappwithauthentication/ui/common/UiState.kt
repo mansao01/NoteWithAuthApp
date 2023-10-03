@@ -40,7 +40,7 @@ sealed interface AddUiState {
 
     data class Success(val createNoteResponse: CreateNoteReponse) : AddUiState
 
-    object Error : AddUiState
+    data class Error(val msg: String) : AddUiState
 }
 
 sealed interface EditUiState {
