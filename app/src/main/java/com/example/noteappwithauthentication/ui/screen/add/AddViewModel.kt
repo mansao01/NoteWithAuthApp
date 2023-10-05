@@ -13,7 +13,6 @@ import com.example.noteappwithauthentication.data.NoteRepository
 import com.example.noteappwithauthentication.data.network.request.CreateNoteRequest
 import com.example.noteappwithauthentication.preferences.AuthTokenManager
 import com.example.noteappwithauthentication.ui.common.AddUiState
-import com.example.noteappwithauthentication.ui.screen.home.HomeViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -23,9 +22,11 @@ class AddViewModel(
     private val authTokenManager: AuthTokenManager
 
 ) : ViewModel() {
-    var uiState: AddUiState by mutableStateOf(AddUiState.Loading)
+    var uiState: AddUiState by mutableStateOf(AddUiState.StandBy)
         private set
-
+    fun getUiState(){
+        uiState = AddUiState.StandBy
+    }
     fun addNote(noteRequest: CreateNoteRequest) {
         viewModelScope.launch {
             val token = authTokenManager.getAccessToken()

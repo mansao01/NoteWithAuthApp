@@ -5,5 +5,7 @@ sealed class Screen(val route:String){
     object Login:Screen("login")
     object Register:Screen("register")
     object Home:Screen("home")
-    object Add:Screen("add")
+    object Add:Screen("home/{userId}"){
+        fun createRoute(userId:Int) = "home/$userId"
+    }
 }

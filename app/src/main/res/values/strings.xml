@@ -10,4 +10,9 @@
     <string name="show_password">show password</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="enter_title">Enter title</string>
+    <string name="title">Title</string>
+    <string name="enter_description">Enter description</string>
+    <string name="description">Description</string>
+    <string name="add">Add</string>
 </resources>
