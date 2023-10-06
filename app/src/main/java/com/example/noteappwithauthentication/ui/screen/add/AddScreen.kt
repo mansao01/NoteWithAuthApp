@@ -8,6 +8,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +40,10 @@ fun AddScreen(
         is AddUiState.StandBy -> AddScreenContent(addViewModel = addViewModel, userId, modifier = modifier)
         is AddUiState.Loading -> LoadingScreen()
         is AddUiState.Success -> {
-            navigateToHome()
+            LaunchedEffect(Unit){
+
+                navigateToHome()
+            }
             MToast(context = context, message = uiState.createNoteResponse.msg)
         }
 

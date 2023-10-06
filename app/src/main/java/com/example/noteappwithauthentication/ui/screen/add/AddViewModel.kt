@@ -1,5 +1,6 @@
 package com.example.noteappwithauthentication.ui.screen.add
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -32,7 +33,7 @@ class AddViewModel(
             val token = authTokenManager.getAccessToken()
             uiState = AddUiState.Loading
             uiState = try {
-                val result = noteRepository.createNote(token!!, createNoteRequest = noteRequest)
+                val result = noteRepository.createNote("Bearer $token", createNoteRequest = noteRequest)
                 AddUiState.Success(result)
             } catch (e: Exception) {
                 val errorMessage = when (e) {

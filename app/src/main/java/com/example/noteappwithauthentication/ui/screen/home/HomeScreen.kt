@@ -36,7 +36,8 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
     uiState: HomeUiState,
     navigateToAdd: (Int) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    navigateToLogin:() ->Unit
 
 ) {
     val context = LocalContext.current
@@ -61,7 +62,10 @@ fun HomeScreen(
             Log.d("HomeScreen", localToken)
         }
 
-        is HomeUiState.Error -> MToast(context = context, message = uiState.msg)
+        is HomeUiState.Error -> {
+            MToast(context = context, message = uiState.msg)
+            navigateToLogin()
+        }
     }
 }
 

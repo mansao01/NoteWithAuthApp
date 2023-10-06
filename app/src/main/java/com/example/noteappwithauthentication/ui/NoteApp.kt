@@ -63,7 +63,10 @@ fun NoteApp(
                 navigateToAdd = { userId ->
                     navController.navigate(Screen.Add.createRoute(userId))
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                navigateToLogin = {
+                    navController.navigate(Screen.Login.route)
+                }
             )
         }
 
