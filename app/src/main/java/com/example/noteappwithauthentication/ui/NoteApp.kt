@@ -81,7 +81,8 @@ fun NoteApp(
                 navigateToHome = {
                     navController.navigate(Screen.Home.route)
                 },
-                userId = userId
+                userId = userId,
+                scrollBehavior = scrollBehavior
             )
         }
     }

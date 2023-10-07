@@ -1,6 +1,7 @@
 package com.example.noteappwithauthentication.ui.screen.home
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +10,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -24,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.noteappwithauthentication.data.network.response.GetProfileResponse
 import com.example.noteappwithauthentication.data.network.response.NoteDataItem
+import com.example.noteappwithauthentication.preferences.AuthViewModel
 import com.example.noteappwithauthentication.ui.common.HomeUiState
 import com.example.noteappwithauthentication.ui.component.LoadingScreen
 import com.example.noteappwithauthentication.ui.component.MToast
@@ -37,7 +43,8 @@ fun HomeScreen(
     uiState: HomeUiState,
     navigateToAdd: (Int) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    navigateToLogin:() ->Unit
+    navigateToLogin: () -> Unit,
+    authViewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
 
 ) {
     val context = LocalContext.current
@@ -57,7 +64,9 @@ fun HomeScreen(
                 noteList = noteList,
                 profile = profile,
                 navigateToAdd = navigateToAdd,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                authViewModel = authViewModel,
+                navigateToLogin = navigateToLogin
             )
             Log.d("HomeScreen", localToken)
         }
@@ -77,13 +86,22 @@ fun HomeContent(
     profile: GetProfileResponse,
     modifier: Modifier = Modifier,
     navigateToAdd: (Int) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    navigateToLogin: () -> Unit,
+    authViewModel: AuthViewModel
 
 ) {
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
             MyFAB(navigate = { navigateToAdd(profile.loggedInId) }, imageVector = Icons.Default.Add)
+        },
+        topBar = {
+            HomeTopBar(
+                scrollBehavior = scrollBehavior,
+                navigateToLogin = { navigateToLogin() },
+                authViewModel = authViewModel
+            )
         }
     ) {
         Surface(
@@ -113,7 +131,7 @@ fun NoteList(
 ) {
     LazyColumn(modifier = modifier.padding(horizontal = 16.dp)) {
         items(noteList) { data ->
-            NoteListItem(note = data)
+            NoteListItem(note = data, modifier = Modifier.clickable {  })
         }
     }
 }
@@ -121,7 +139,21 @@ fun NoteList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTopBar(
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    navigateToLogin: () -> Unit,
+    authViewModel: AuthViewModel
 ) {
-    TODO()
+    LargeTopAppBar(
+        scrollBehavior = scrollBehavior,
+        title = { Text(text = "Add") },
+        actions = {
+            IconButton(onClick = {
+                navigateToLogin()
+                authViewModel.removeAccessToken()
+                authViewModel.saveIsLoginState(false)
+            }) {
+                Icon(imageVector = Icons.Default.Logout, contentDescription = "Logout")
+            }
+        }
+    )
 }
