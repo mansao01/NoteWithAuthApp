@@ -5,6 +5,7 @@ import com.example.noteappwithauthentication.data.network.response.GetProfileRes
 import com.example.noteappwithauthentication.data.network.response.LoginResponse
 import com.example.noteappwithauthentication.data.network.response.NoteDataItem
 import com.example.noteappwithauthentication.data.network.response.RegisterResponse
+import com.example.noteappwithauthentication.data.network.response.UpdateNoteResponse
 
 sealed interface RegisterUiState {
     object StandBy : RegisterUiState
@@ -47,7 +48,7 @@ sealed interface EditUiState {
     object StandBy : EditUiState
     object Loading : EditUiState
 
-    data class Success(val createNoteResponse: CreateNoteReponse) : EditUiState
+    data class Success(val updateNoteResponse: UpdateNoteResponse) : EditUiState
 
-    object Error : EditUiState
+   data class Error(val message:String) : EditUiState
 }

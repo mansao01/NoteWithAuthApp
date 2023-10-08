@@ -5,6 +5,7 @@ import com.example.noteappwithauthentication.data.network.request.CreateNoteRequ
 import com.example.noteappwithauthentication.data.network.request.LoginRequest
 import com.example.noteappwithauthentication.data.network.request.LogoutRequest
 import com.example.noteappwithauthentication.data.network.request.RegisterRequest
+import com.example.noteappwithauthentication.data.network.request.UpdateNoteRequest
 import com.example.noteappwithauthentication.data.network.response.CreateNoteReponse
 import com.example.noteappwithauthentication.data.network.response.DeleteNoteResponse
 import com.example.noteappwithauthentication.data.network.response.GetNotesByIdResponse
@@ -12,6 +13,7 @@ import com.example.noteappwithauthentication.data.network.response.GetProfileRes
 import com.example.noteappwithauthentication.data.network.response.LoginResponse
 import com.example.noteappwithauthentication.data.network.response.LogoutResponse
 import com.example.noteappwithauthentication.data.network.response.RegisterResponse
+import com.example.noteappwithauthentication.data.network.response.UpdateNoteResponse
 
 interface NoteRepository {
     suspend fun register(registerRequest: RegisterRequest): RegisterResponse
@@ -27,6 +29,12 @@ interface NoteRepository {
     suspend fun createNote(token: String, createNoteRequest: CreateNoteRequest): CreateNoteReponse
 
     suspend fun deleteNote(token: String, id: Int): DeleteNoteResponse
+
+    suspend fun updateNote(
+        token: String,
+        id: Int,
+        updateNoteRequest: UpdateNoteRequest
+    ): UpdateNoteResponse
 }
 
 class NetworkNoteRepository(
@@ -52,4 +60,12 @@ class NetworkNoteRepository(
 
     override suspend fun deleteNote(token: String, id: Int): DeleteNoteResponse =
         apiService.deleteNote(token, id)
+
+    override suspend fun updateNote(
+        token: String,
+        id: Int,
+        updateNoteRequest: UpdateNoteRequest
+    ): UpdateNoteResponse =
+        apiService.updateNote(token, id, updateNoteRequest)
+
 }

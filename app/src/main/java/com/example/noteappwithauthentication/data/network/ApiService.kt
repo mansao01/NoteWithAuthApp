@@ -4,6 +4,7 @@ import com.example.noteappwithauthentication.data.network.request.CreateNoteRequ
 import com.example.noteappwithauthentication.data.network.request.LoginRequest
 import com.example.noteappwithauthentication.data.network.request.LogoutRequest
 import com.example.noteappwithauthentication.data.network.request.RegisterRequest
+import com.example.noteappwithauthentication.data.network.request.UpdateNoteRequest
 import com.example.noteappwithauthentication.data.network.response.CreateNoteReponse
 import com.example.noteappwithauthentication.data.network.response.DeleteNoteResponse
 import com.example.noteappwithauthentication.data.network.response.GetNotesByIdResponse
@@ -11,9 +12,11 @@ import com.example.noteappwithauthentication.data.network.response.GetProfileRes
 import com.example.noteappwithauthentication.data.network.response.LoginResponse
 import com.example.noteappwithauthentication.data.network.response.LogoutResponse
 import com.example.noteappwithauthentication.data.network.response.RegisterResponse
+import com.example.noteappwithauthentication.data.network.response.UpdateNoteResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -61,4 +64,13 @@ interface ApiService {
         @Path("id")
         id: Int
     ): DeleteNoteResponse
+
+    @PATCH("v1/notes/{id}")
+    suspend fun updateNote(
+        @Header("Authorization")
+        token: String,
+        @Path("id")
+        id:Int,
+        @Body updateNoteRequest: UpdateNoteRequest
+    ):UpdateNoteResponse
 }
