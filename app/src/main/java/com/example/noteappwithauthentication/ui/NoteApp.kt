@@ -14,6 +14,8 @@ import androidx.navigation.navArgument
 import com.example.noteappwithauthentication.ui.navigation.Screen
 import com.example.noteappwithauthentication.ui.screen.add.AddScreen
 import com.example.noteappwithauthentication.ui.screen.add.AddViewModel
+import com.example.noteappwithauthentication.ui.screen.edit.EditScreen
+import com.example.noteappwithauthentication.ui.screen.edit.EditViewModel
 import com.example.noteappwithauthentication.ui.screen.home.HomeScreen
 import com.example.noteappwithauthentication.ui.screen.home.HomeViewModel
 import com.example.noteappwithauthentication.ui.screen.login.LoginScreen
@@ -40,7 +42,10 @@ fun NoteApp(
                 viewModel(factory = RegisterViewModel.Factory)
             RegisterScreen(
                 uiState = registerViewModel.uiState,
-                navigateToLogin = { navController.navigate(Screen.Login.route) })
+                navigateToLogin = {
+                    navController.navigate(Screen.Login.route)
+                    navController.popBackStack()
+                })
         }
 
         composable(Screen.Login.route) {
@@ -49,9 +54,11 @@ fun NoteApp(
                 uiState = loginViewModel.uiState,
                 navigateToHome = {
                     navController.navigate(Screen.Home.route)
+                    navController.popBackStack()
                 },
                 navigateToRegister = {
                     navController.navigate(Screen.Register.route)
+                    navController.popBackStack()
                 }
             )
         }
@@ -66,6 +73,10 @@ fun NoteApp(
                 scrollBehavior = scrollBehavior,
                 navigateToLogin = {
                     navController.navigate(Screen.Login.route)
+                    navController.popBackStack()
+                },
+                navigateToEdit = {  noteId ->
+                    navController.navigate(Screen.Edit.createRoute( noteId))
                 }
             )
         }
@@ -79,11 +90,32 @@ fun NoteApp(
                 uiState = addViewModel.uiState,
                 addViewModel = addViewModel,
                 navigateToHome = {
+                    navController.popBackStack()
                     navController.navigate(Screen.Home.route)
                 },
                 userId = userId,
                 scrollBehavior = scrollBehavior
             )
+        }
+
+        composable(
+            Screen.Edit.route, arguments = listOf(
+
+                navArgument("noteId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { data ->
+            val noteId = data.arguments?.getInt("noteId") ?: -1
+            val editViewModel: EditViewModel = viewModel(factory = EditViewModel.Factory)
+
+            EditScreen(
+                noteId = noteId,
+                uiState = editViewModel.uiState,
+                navigateToHome = {
+                    navController.popBackStack()
+                    navController.navigate(Screen.Home.route)
+                })
         }
     }
 }

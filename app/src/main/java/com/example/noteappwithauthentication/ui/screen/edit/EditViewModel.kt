@@ -11,31 +11,54 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.noteappwithauthentication.NoteApplication
 import com.example.noteappwithauthentication.data.NoteRepository
 import com.example.noteappwithauthentication.data.network.request.UpdateNoteRequest
+import com.example.noteappwithauthentication.preferences.AuthTokenManager
 import com.example.noteappwithauthentication.ui.common.EditUiState
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
 class EditViewModel(
-    private val noteRepository: NoteRepository
+    private val noteRepository: NoteRepository,
+    private val authTokenManager: AuthTokenManager
 ) : ViewModel() {
 
-    var uiState: EditUiState by mutableStateOf(EditUiState.StandBy)
+    var uiState: EditUiState by mutableStateOf(EditUiState.Loading)
         private set
 
-    fun getUiState() {
-        uiState = EditUiState.StandBy
+    fun getDetailNote(noteId: Int) {
+        viewModelScope.launch {
+            val localToken = authTokenManager.getAccessToken()
+            uiState = EditUiState.Loading
+            uiState = try {
+                val result = noteRepository.getDetailNoteById("Bearer $localToken", noteId)
+                EditUiState.StandBy(result)
+            } catch (e: Exception) {
+                val errorMessage = when (e) {
+                    is IOException -> "Network error occurred"
+                    is HttpException -> {
+                        when (e.code()) {
+                            400 -> e.response()?.errorBody()?.string().toString()
+                            // Add more cases for specific HTTP error codes if needed
+                            else -> "HTTP error: ${e.code()}"
+                        }
+                    }
+
+                    else -> "An unexpected error occurred"
+                }
+                EditUiState.ErrorGetNoteDetail(errorMessage)
+            }
+        }
     }
 
     fun updateNote(
-        token: String,
         id: Int,
         updateNoteRequest: UpdateNoteRequest
     ) {
         viewModelScope.launch {
+            val localToken = authTokenManager.getAccessToken()
             uiState = EditUiState.Loading
             uiState = try {
-                val result = noteRepository.updateNote(token, id, updateNoteRequest)
+                val result = noteRepository.updateNote("Bearer $localToken", id, updateNoteRequest)
                 EditUiState.Success(result)
             } catch (e: Exception) {
                 val errorMessage = when (e) {
@@ -43,6 +66,7 @@ class EditViewModel(
                     is HttpException -> {
                         when (e.code()) {
                             400 -> e.response()?.errorBody()?.string().toString()
+                            401 -> e.response()?.errorBody()?.string().toString()
                             // Add more cases for specific HTTP error codes if needed
                             else -> "HTTP error: ${e.code()}"
                         }
@@ -61,7 +85,8 @@ class EditViewModel(
                 val application =
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as NoteApplication)
                 val noteRepository = application.container.noteRepository
-                EditViewModel(noteRepository = noteRepository)
+                val authTokenManager = application.authTokenManager
+                EditViewModel(noteRepository = noteRepository, authTokenManager = authTokenManager)
             }
         }
     }

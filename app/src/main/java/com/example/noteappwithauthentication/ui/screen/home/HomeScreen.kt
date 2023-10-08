@@ -2,8 +2,6 @@ package com.example.noteappwithauthentication.ui.screen.home
 
 import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +13,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.noteappwithauthentication.data.network.response.GetProfileResponse
 import com.example.noteappwithauthentication.data.network.response.NoteDataItem
-import com.example.noteappwithauthentication.preferences.AuthViewModel
 import com.example.noteappwithauthentication.ui.common.HomeUiState
 import com.example.noteappwithauthentication.ui.component.LoadingScreen
 import com.example.noteappwithauthentication.ui.component.MToast
@@ -44,7 +40,7 @@ fun HomeScreen(
     navigateToAdd: (Int) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     navigateToLogin: () -> Unit,
-    authViewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
+    navigateToEdit:(Int) ->Unit
 
 ) {
     val context = LocalContext.current
@@ -65,8 +61,9 @@ fun HomeScreen(
                 profile = profile,
                 navigateToAdd = navigateToAdd,
                 scrollBehavior = scrollBehavior,
-                authViewModel = authViewModel,
-                navigateToLogin = navigateToLogin
+                homeViewModel = homeViewModel,
+                navigateToLogin = navigateToLogin,
+                navigateToEdit = navigateToEdit
             )
             Log.d("HomeScreen", localToken)
         }
@@ -88,7 +85,9 @@ fun HomeContent(
     navigateToAdd: (Int) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     navigateToLogin: () -> Unit,
-    authViewModel: AuthViewModel
+    homeViewModel: HomeViewModel,
+    navigateToEdit:(Int) ->Unit
+
 
 ) {
     Scaffold(
@@ -100,7 +99,8 @@ fun HomeContent(
             HomeTopBar(
                 scrollBehavior = scrollBehavior,
                 navigateToLogin = { navigateToLogin() },
-                authViewModel = authViewModel
+                homeViewModel = homeViewModel,
+                profile  = profile
             )
         }
     ) {
@@ -109,17 +109,7 @@ fun HomeContent(
                 .fillMaxSize()
                 .padding(it)
         ) {
-            Column {
-                Text(
-                    text = "Welcome, ${profile.loggedInUserName}",
-                    modifier = modifier
-                        .padding(top = 16.dp)
-                        .padding(start = 16.dp),
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Spacer(modifier = Modifier.padding(bottom = 8.dp))
-                NoteList(noteList = noteList)
-            }
+            NoteList(noteList = noteList, navigateToEdit  = navigateToEdit)
         }
     }
 }
@@ -127,11 +117,12 @@ fun HomeContent(
 @Composable
 fun NoteList(
     noteList: List<NoteDataItem>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToEdit:(Int) ->Unit
 ) {
     LazyColumn(modifier = modifier.padding(horizontal = 16.dp)) {
         items(noteList) { data ->
-            NoteListItem(note = data, modifier = Modifier.clickable {  })
+            NoteListItem(note = data, modifier = Modifier.clickable { navigateToEdit( data.id) })
         }
     }
 }
@@ -141,16 +132,17 @@ fun NoteList(
 fun HomeTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     navigateToLogin: () -> Unit,
-    authViewModel: AuthViewModel
+    homeViewModel: HomeViewModel,
+    profile:GetProfileResponse
 ) {
     LargeTopAppBar(
         scrollBehavior = scrollBehavior,
-        title = { Text(text = "Add") },
+        title = { Text(text = "Welcome, ${profile.loggedInUserName}") },
         actions = {
             IconButton(onClick = {
                 navigateToLogin()
-                authViewModel.removeAccessToken()
-                authViewModel.saveIsLoginState(false)
+                homeViewModel.removeAccessToken()
+                homeViewModel.saveIsLoginState(false)
             }) {
                 Icon(imageVector = Icons.Default.Logout, contentDescription = "Logout")
             }

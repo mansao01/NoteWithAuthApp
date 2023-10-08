@@ -7,6 +7,7 @@ import com.example.noteappwithauthentication.data.network.request.RegisterReques
 import com.example.noteappwithauthentication.data.network.request.UpdateNoteRequest
 import com.example.noteappwithauthentication.data.network.response.CreateNoteReponse
 import com.example.noteappwithauthentication.data.network.response.DeleteNoteResponse
+import com.example.noteappwithauthentication.data.network.response.GetDetailNoteResponse
 import com.example.noteappwithauthentication.data.network.response.GetNotesByIdResponse
 import com.example.noteappwithauthentication.data.network.response.GetProfileResponse
 import com.example.noteappwithauthentication.data.network.response.LoginResponse
@@ -50,6 +51,14 @@ interface ApiService {
         id: Int
     ): GetNotesByIdResponse
 
+    @GET("v1/note/{id}")
+    suspend fun getDetailNoteById(
+        @Header("Authorization")
+        token: String,
+        @Path("id")
+        id: Int
+    ): GetDetailNoteResponse
+
     @POST("v1/note")
     suspend fun createNote(
         @Header("Authorization")
@@ -65,7 +74,7 @@ interface ApiService {
         id: Int
     ): DeleteNoteResponse
 
-    @PATCH("v1/notes/{id}")
+    @PATCH("v1/note/{id}")
     suspend fun updateNote(
         @Header("Authorization")
         token: String,

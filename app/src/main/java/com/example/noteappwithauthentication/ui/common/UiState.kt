@@ -1,6 +1,7 @@
 package com.example.noteappwithauthentication.ui.common
 
 import com.example.noteappwithauthentication.data.network.response.CreateNoteReponse
+import com.example.noteappwithauthentication.data.network.response.GetDetailNoteResponse
 import com.example.noteappwithauthentication.data.network.response.GetProfileResponse
 import com.example.noteappwithauthentication.data.network.response.LoginResponse
 import com.example.noteappwithauthentication.data.network.response.NoteDataItem
@@ -45,10 +46,11 @@ sealed interface AddUiState {
 }
 
 sealed interface EditUiState {
-    object StandBy : EditUiState
+    data class StandBy(val getDetailNote: GetDetailNoteResponse) : EditUiState
     object Loading : EditUiState
 
     data class Success(val updateNoteResponse: UpdateNoteResponse) : EditUiState
 
    data class Error(val message:String) : EditUiState
+   data class ErrorGetNoteDetail(val message:String) : EditUiState
 }

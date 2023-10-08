@@ -8,6 +8,7 @@ import com.example.noteappwithauthentication.data.network.request.RegisterReques
 import com.example.noteappwithauthentication.data.network.request.UpdateNoteRequest
 import com.example.noteappwithauthentication.data.network.response.CreateNoteReponse
 import com.example.noteappwithauthentication.data.network.response.DeleteNoteResponse
+import com.example.noteappwithauthentication.data.network.response.GetDetailNoteResponse
 import com.example.noteappwithauthentication.data.network.response.GetNotesByIdResponse
 import com.example.noteappwithauthentication.data.network.response.GetProfileResponse
 import com.example.noteappwithauthentication.data.network.response.LoginResponse
@@ -25,6 +26,8 @@ interface NoteRepository {
     suspend fun logout(logoutRequest: LogoutRequest): LogoutResponse
 
     suspend fun getNotesById(token: String, id: Int): GetNotesByIdResponse
+
+    suspend fun getDetailNoteById(token: String, id: Int): GetDetailNoteResponse
 
     suspend fun createNote(token: String, createNoteRequest: CreateNoteRequest): CreateNoteReponse
 
@@ -51,6 +54,9 @@ class NetworkNoteRepository(
 
     override suspend fun getNotesById(token: String, id: Int): GetNotesByIdResponse =
         apiService.getNotesById(token, id)
+
+    override suspend fun getDetailNoteById(token: String, id: Int): GetDetailNoteResponse =
+        apiService.getDetailNoteById(token, id)
 
     override suspend fun createNote(
         token: String,

@@ -51,8 +51,19 @@ class HomeViewModel(
             }
         }
     }
+    fun removeAccessToken() {
+        uiState = HomeUiState.Loading
+        viewModelScope.launch {
+            authTokenManager.clearTokens()
+        }
+    }
 
-
+    fun saveIsLoginState(isLogin: Boolean) {
+        uiState = HomeUiState.Loading
+        viewModelScope.launch {
+            authTokenManager.saveIsLoginState(isLogin)
+        }
+    }
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
