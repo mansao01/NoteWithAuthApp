@@ -71,6 +71,8 @@ fun HomeScreen(
         is HomeUiState.Error -> {
             MToast(context = context, message = uiState.msg)
             navigateToLogin()
+            homeViewModel.removeAccessToken()
+            homeViewModel.saveIsLoginState(false)
         }
     }
 }

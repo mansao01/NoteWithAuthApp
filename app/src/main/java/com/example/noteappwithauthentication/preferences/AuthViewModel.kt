@@ -10,6 +10,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.noteappwithauthentication.NoteApplication
 import com.example.noteappwithauthentication.ui.navigation.Screen
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
@@ -21,9 +23,14 @@ class AuthViewModel(
     private val _isLoading: MutableState<Boolean> = mutableStateOf(true)
     val isLoading: State<Boolean> = _isLoading
 
+    private val _loginState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val loginState: StateFlow<Boolean> = _loginState
+
     init {
         viewModelScope.launch {
             authTokenManager.getIsLoginState().collect { isLogin ->
+                _loginState.value = isLogin
+
                 if (isLogin) {
                     _startDestination.value = Screen.Home.route
                 } else {
@@ -35,11 +42,12 @@ class AuthViewModel(
         }
     }
 
-    fun saveIsLoginState(isLogin: Boolean) {
-        viewModelScope.launch {
-            authTokenManager.saveIsLoginState(isLogin)
-        }
-    }
+
+//    fun getLoginState(){
+//        viewModelScope.launch {
+//            authTokenManager.getAccessToken()
+//        }
+//    }
 
 //    suspend fun getAccessToken() {
 //        authTokenManager.getAccessTokenFlow().collect { token ->
@@ -47,17 +55,17 @@ class AuthViewModel(
 //        }
 //    }
 
-    fun removeAccessToken() {
-        viewModelScope.launch {
-            authTokenManager.clearTokens()
-        }
-    }
+//    fun removeAccessToken() {
+//        viewModelScope.launch {
+//            authTokenManager.clearTokens()
+//        }
+//    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application =
-                    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as  NoteApplication)
+                    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as NoteApplication)
                 val authTokenManager = application.authTokenManager
                 AuthViewModel(authTokenManager = authTokenManager)
             }

@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.noteappwithauthentication.R
 import com.example.noteappwithauthentication.data.network.request.LoginRequest
+import com.example.noteappwithauthentication.preferences.AuthViewModel
 import com.example.noteappwithauthentication.ui.common.LoginUiState
 import com.example.noteappwithauthentication.ui.component.LoadingScreen
 
@@ -51,28 +53,35 @@ fun LoginScreen(
     uiState: LoginUiState,
     loginViewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory),
     navigateToHome: () -> Unit,
-    navigateToRegister: () -> Unit
+    navigateToRegister: () -> Unit,
+    authViewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
 
 ) {
-    val context = LocalContext.current
-    when (uiState) {
-        is LoginUiState.StandBy -> LoginComponent(
-            loginViewModel = loginViewModel,
-            navigateToRegister = navigateToRegister
-        )
+    val isLogin by authViewModel.loginState.collectAsState()
+    if (isLogin){
+        BlankScreenWithLoading()
+    }else{
+        val context = LocalContext.current
+        when (uiState) {
+            is LoginUiState.StandBy -> LoginComponent(
+                loginViewModel = loginViewModel,
+                navigateToRegister = navigateToRegister
+            )
 
-        is LoginUiState.Loading -> LoadingScreen()
-        is LoginUiState.Success -> {
-            LaunchedEffect(Unit){
-                navigateToHome()
+            is LoginUiState.Loading -> LoadingScreen()
+            is LoginUiState.Success -> {
+                LaunchedEffect(Unit) {
+                    navigateToHome()
+                }
+            }
+
+            is LoginUiState.Error -> {
+                mToast(context, uiState.msg)
+                loginViewModel.getUiState()
             }
         }
-
-        is LoginUiState.Error -> {
-            mToast(context, uiState.msg)
-            loginViewModel.getUiState()
-        }
     }
+
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -201,4 +210,12 @@ private fun mToast(context: Context, message: String) {
 
 private fun isEmailValid(email: String): Boolean {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+
+@Composable
+fun BlankScreenWithLoading() {
+    Column(Modifier.fillMaxSize()) {
+
+        LoadingScreen()
+    }
 }
