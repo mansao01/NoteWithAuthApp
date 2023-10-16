@@ -44,9 +44,6 @@ fun HomeScreen(
 
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        homeViewModel.getNotesAndProfile()
-    }
     when (uiState) {
         is HomeUiState.Loading -> {
             LoadingScreen()

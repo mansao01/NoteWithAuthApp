@@ -9,7 +9,7 @@ interface AppContainer {
 }
 
 class DefaultAppContainer : AppContainer {
-    private val baseUrl = "http://192.168.18.161:8000/"
+    private val baseUrl = "http://192.168.18.162:8000/"
 
 
     private val retrofit = Retrofit.Builder()

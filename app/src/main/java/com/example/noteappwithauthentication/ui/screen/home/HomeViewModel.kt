@@ -25,7 +25,10 @@ class HomeViewModel(
         private set
 
 
-    fun getNotesAndProfile() {
+    init {
+        getNotesAndProfile()
+    }
+    private fun getNotesAndProfile() {
         viewModelScope.launch {
             val localToken  = authTokenManager.getAccessToken()
             val userId = authTokenManager.getUserId()
